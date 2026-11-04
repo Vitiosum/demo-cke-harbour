@@ -1,7 +1,7 @@
 # ko builds the Go source into a small distroless image, without Docker.
+# Clever Kubernetes Engine nodes are amd64 (checked with kubectl get nodes -o wide).
 defaultPlatforms:
   - linux/amd64
-  - linux/arm64
 builds:
   - id: harbour
     main: .

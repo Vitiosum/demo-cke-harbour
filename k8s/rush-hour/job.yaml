@@ -1,4 +1,4 @@
-# Rush hour: 30 requests per second on /api/work for 4 minutes, from inside the cluster.
+# Rush hour: 20 requests per second on /api/work for 4 minutes, from inside the cluster.
 # Same image as the app (ko builds it), started with the "rush" command.
 apiVersion: batch/v1
 kind: Job
@@ -21,7 +21,7 @@ spec:
       containers:
         - name: rush
           image: ko://github.com/vitiosum/demo-cke-harbour
-          args: [rush, -url, http://harbour/api/work, -rps, "30", -for, 4m]
+          args: [rush, -url, http://harbour/api/work, -rps, "20", -for, 4m]
           resources:
             requests:
               cpu: 50m

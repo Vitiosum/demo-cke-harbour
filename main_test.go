@@ -99,7 +99,7 @@ func TestFleetFromKubernetesAPI(t *testing.T) {
 	answers := map[string]string{
 		"/api/v1/namespaces/harbour/pods": `{"items":[
 			{"metadata":{"name":"harbour-aaa-1","labels":{"app.kubernetes.io/name":"harbour","pod-template-hash":"aaa"},"creationTimestamp":"2026-11-04T10:00:00Z","deletionTimestamp":"2026-11-04T10:05:00Z"},
-			 "spec":{"nodeName":"node0"},"status":{"phase":"Running","conditions":[{"type":"Ready","status":"False"}],"containerStatuses":[{"imageID":"ttl.sh/x@sha256:1111111111111111","restartCount":0}]}},
+			 "spec":{"nodeName":"node0"},"status":{"phase":"Running","conditions":[{"type":"Ready","status":"False"}],"containerStatuses":[{"imageID":"ttl.sh/x@sha256:1111111111111111","restartCount":0,"state":{"waiting":{"reason":"ContainerCreating"}}}]}},
 			{"metadata":{"name":"harbour-bbb-2","labels":{"app.kubernetes.io/name":"harbour","pod-template-hash":"bbb"},"creationTimestamp":"2026-11-04T10:04:00Z"},
 			 "spec":{"nodeName":"node0","containers":[{"resources":{"requests":{"cpu":"100m"}}}]},"status":{"phase":"Running","conditions":[{"type":"Ready","status":"True"}],"containerStatuses":[{"imageID":"ttl.sh/x@sha256:2222222222222222","restartCount":1}]}},
 			{"metadata":{"name":"rush-hour-xyz","labels":{"app.kubernetes.io/name":"rush-hour"},"creationTimestamp":"2026-11-04T10:04:30Z"},
@@ -156,6 +156,9 @@ func TestFleetFromKubernetesAPI(t *testing.T) {
 	}
 	if len(f.Events) != 2 || f.Events[0].Reason != "SuccessfulRescale" || f.Events[1].Object != "deployment/harbour" {
 		t.Fatalf("events: %+v", f.Events)
+	}
+	if f.Cranes[0].Waiting != "ContainerCreating" || f.Cranes[1].Waiting != "" {
+		t.Fatalf("waiting: %q %q", f.Cranes[0].Waiting, f.Cranes[1].Waiting)
 	}
 	if f.Cranes[1].Request != 100 || f.Kubernetes != "v1.36.0" {
 		t.Fatalf("request=%d kubernetes=%q", f.Cranes[1].Request, f.Kubernetes)

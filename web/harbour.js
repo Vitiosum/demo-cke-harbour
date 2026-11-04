@@ -184,9 +184,7 @@
       li.classList.toggle('is-starting', !c.ready && !c.terminating);
       li.classList.toggle('is-leaving', c.terminating);
       paintCrane(li);
-      let label = 'On duty';
-      if (c.terminating) label = 'Signing off';
-      else if (!c.ready) label = c.restarts > 0 ? `Not ready, ${c.restarts} restarts` : 'Rigging';
+      const label = craneLabel(c);
       li.querySelector('.plate__state').textContent = label;
       const bar = li.querySelector('.plate__cpu');
       if (c.cpu != null && c.request) {
@@ -209,6 +207,28 @@
     }
   }
 
+  // What a crane is doing, in plain words, from the pod status.
+  function craneLabel(c) {
+    if (c.terminating) return 'Signing off';
+    if (c.ready) return 'On duty';
+    switch (c.waiting) {
+      case 'Scheduling': return 'Scheduling';
+      case 'ContainerCreating': return 'Pulling image';
+      case 'ErrImagePull':
+      case 'ImagePullBackOff': return 'Image not found';
+      case 'CrashLoopBackOff': return 'Crashing';
+      default: return c.restarts > 0 ? `Not ready, ${c.restarts} restarts` : 'Not ready';
+    }
+  }
+
+  function lateReason(c) {
+    const label = craneLabel(c);
+    if (label === 'Image not found') return 'the new crane cannot pull its image';
+    if (label === 'Pulling image') return 'the new crane is still pulling its image';
+    if (label === 'Crashing') return 'the new crane keeps crashing';
+    return 'the new crane is still not ready';
+  }
+
   function setGauge(id, value, note, mode) {
     $(`#${id}`).textContent = value;
     $(`#${id}-note`).textContent = note;
@@ -225,11 +245,11 @@
     const newest = [...f.cranes].reverse().find((c) => !c.terminating);
     const v = newest ? versionOf(newest.name) : '';
     if (d.rolling) {
-      const waiting = f.cranes.find((c) => !c.ready && !c.terminating && Date.now() - Date.parse(c.started) > 25000);
-      const note = waiting
-        ? 'a new crane is not ready yet: it gets no traffic until it is'
-        : `revision ${d.revision}${v ? ` (${v})` : ''} rolling out, ${d.ready} cranes ready`;
-      return setGauge('rollout', `${d.updated}/${d.desired}`, note, waiting ? 'alert' : 'busy');
+      const late = f.cranes.find((c) => !c.ready && !c.terminating && Date.now() - Date.parse(c.started) > 60000);
+      const note = late
+        ? `${lateReason(late)} after a minute: it gets no traffic, the old cranes keep working`
+        : `${d.updated} of ${d.desired} cranes on revision ${d.revision}${v ? ` (${v})` : ''}, ${d.ready} ready to work`;
+      return setGauge('rollout', `${d.updated}/${d.desired}`, note, late ? 'alert' : 'busy');
     }
     setGauge('rollout', `Rev ${d.revision}`, `steady${v ? ` on ${v}` : ''}, ${d.ready} of ${d.desired} cranes ready`);
   }

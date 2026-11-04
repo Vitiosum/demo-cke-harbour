@@ -129,7 +129,8 @@ type crane struct {
 	Started     time.Time `json:"started"`
 	Image       string    `json:"image"`
 	Restarts    int       `json:"restarts"`
-	CPU         *int      `json:"cpu,omitempty"` // millicores, from metrics.k8s.io
+	Waiting     string    `json:"waiting,omitempty"` // why the container is not running yet (ContainerCreating, ImagePullBackOff…)
+	CPU         *int      `json:"cpu,omitempty"`     // millicores, from metrics.k8s.io
 	Memory      *int      `json:"memory,omitempty"`
 	Request     int       `json:"request,omitempty"` // CPU request in millicores (what the HPA divides by)
 }
@@ -182,6 +183,11 @@ type podList struct {
 			ContainerStatuses []struct {
 				ImageID      string `json:"imageID"`
 				RestartCount int    `json:"restartCount"`
+				State        struct {
+					Waiting *struct {
+						Reason string `json:"reason"`
+					} `json:"waiting"`
+				} `json:"state"`
 			} `json:"containerStatuses"`
 		} `json:"status"`
 	} `json:"items"`
@@ -342,6 +348,11 @@ func (k *kube) fleet(ctx context.Context, app string) (fleet, error) {
 			if len(p.Status.ContainerStatuses) > 0 {
 				c.Image = shortDigest(p.Status.ContainerStatuses[0].ImageID)
 				c.Restarts = p.Status.ContainerStatuses[0].RestartCount
+				if w := p.Status.ContainerStatuses[0].State.Waiting; w != nil {
+					c.Waiting = w.Reason
+				}
+			} else if p.Status.Phase == "Pending" {
+				c.Waiting = "Scheduling"
 			}
 			if u, ok := usage[c.Name]; ok {
 				c.CPU, c.Memory = &u[0], &u[1]
@@ -376,7 +387,9 @@ func (k *kube) fleet(ctx context.Context, app string) (fleet, error) {
 		if len(dep.Spec.Template.Spec.Containers) > 0 {
 			d.Image = dep.Spec.Template.Spec.Containers[0].Image
 		}
-		d.Rolling = d.Updated < d.Desired || d.Total > d.Updated
+		// A rollout is running while pods of an older template remain. A scale-up
+		// (HPA) adds pods of the current template: it is not a rollout.
+		d.Rolling = d.Total > d.Updated
 		for _, cond := range dep.Status.Conditions {
 			if cond.Type == "Progressing" && cond.Reason == "ProgressDeadlineExceeded" {
 				d.Stalled = cond.Message

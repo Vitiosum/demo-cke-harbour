@@ -117,8 +117,8 @@
         <ol class="acts">
           <li><b>Ship version 2.</b> One crane at a time is replaced; the lost counter stays at zero.
             <code>VERSION=v2 ko apply --bare -f k8s/</code></li>
-          <li><b>Rush hour.</b> 30 requests per second for 4 minutes: the autoscaler adds cranes, then removes them.
-            <code>ko apply --bare -f k8s/rush-hour/</code></li>
+          <li><b>Rush hour.</b> 20 requests per second for 4 minutes: the autoscaler adds cranes, then removes them.
+            <code>VERSION=v2 ko apply --bare -f k8s/rush-hour/</code></li>
           <li><b>A bad release.</b> The new crane cannot reach the ledger, never becomes ready, never gets traffic.
             <code>kubectl -n harbour set env deployment/harbour POSTGRESQL_ADDON_URI=postgres://nowhere:5432/x</code></li>
           <li><b>Roll back.</b>
