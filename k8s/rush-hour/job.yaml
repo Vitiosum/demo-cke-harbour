@@ -1,0 +1,35 @@
+# Rush hour: 30 requests per second on /api/work for 4 minutes, from inside the cluster.
+# Same image as the app (ko builds it), started with the "rush" command.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rush-hour
+  namespace: harbour
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 120
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rush-hour
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: rush
+          image: ko://github.com/vitiosum/demo-cke-harbour
+          args: [rush, -url, http://harbour/api/work, -rps, "30", -for, 4m]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]

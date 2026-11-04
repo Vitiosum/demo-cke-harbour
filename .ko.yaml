@@ -1,0 +1,10 @@
+# ko builds the Go source into a small distroless image, without Docker.
+defaultPlatforms:
+  - linux/amd64
+  - linux/arm64
+builds:
+  - id: harbour
+    main: .
+    ldflags:
+      - -s -w
+      - -X main.version={{ or (index .Env "VERSION") "dev" }}

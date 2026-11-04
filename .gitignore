@@ -1,0 +1,13 @@
+# Build outputs
+/harbour
+*.test
+*.out
+# Local files
+.env*
+!.env.example
+.clever.json
+*.kubeconfig
+kubeconfig*.yaml
+.claude/
+# OS
+.DS_Store

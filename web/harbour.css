@@ -1,0 +1,292 @@
+/* Harbour: a container port at night. The Clever Brand Kit (cc-brand.css) frames it, unchanged. */
+:root {
+  --stencil: "Big Shoulders Stencil", "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  --sky-top: #0e1124;
+  --sky-low: #1f2654;
+  --sea: #0a1230;
+  --concrete: #343a62;
+  --concrete-top: #4a5184;
+  --sodium: #ffb347;
+  --lost: #ff5d6c;
+  --ok: #3fe0c5;
+  --paint-v1: #f2c037;
+  --paint-v2: #f57461;
+  --paint-v3: #5fe3d3;
+  --paint-v4: #b7b5ff;
+  --sea-h: clamp(58px, 15%, 86px);
+  --wall-h: 76px;
+}
+
+html { scroll-behavior: smooth; }
+body { display: flex; flex-direction: column; min-height: 100vh; }
+main { flex: 1; }
+:focus-visible { outline: 2px solid var(--cc-orange); outline-offset: 3px; border-radius: 6px; }
+.cc-hide-sm { }
+.live-short { display: none; }
+.cc-footer li a.is-cert { color: var(--cc-orange); background: none; -webkit-background-clip: initial; background-clip: initial; }
+.footer-badge { display: flex; align-items: center; gap: 14px; margin-top: 20px; color: var(--cc-text-2); font-size: 14px; max-width: 300px; }
+.footer-badge b { color: var(--cc-text); }
+.footer-badge .cc-cert__badge { width: 84px; height: 84px; flex: none; margin: 0; animation: none; filter: drop-shadow(0 8px 16px rgba(165, 16, 80, 0.35)); }
+.footer-badge:hover b { color: var(--cc-orange); }
+
+/* ---------- Head: title and the four gauges ---------- */
+.harbour__head {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(20px, 4vw, 56px);
+  align-items: end; padding-block: clamp(24px, 3.4vw, 44px) clamp(16px, 2vw, 24px);
+}
+.harbour__title {
+  margin: 0; font-family: var(--stencil); font-weight: 800; font-size: clamp(64px, 10vw, 132px);
+  line-height: 0.82; letter-spacing: 0.01em; color: var(--cc-text);
+}
+.harbour__lead { margin: 18px 0 0; max-width: 58ch; color: var(--cc-text-2); line-height: 1.6; font-size: 16px; }
+
+.gauges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin: 0; border-top: 1px solid var(--cc-border); }
+.gauge { padding: 14px 16px 6px 0; border-bottom: 1px solid var(--cc-border); }
+.gauge:nth-child(2n) { padding-left: 18px; border-left: 1px solid var(--cc-border); }
+.gauge dt { font-size: 13.5px; font-weight: 600; color: var(--cc-text-2); }
+.gauge dd {
+  margin: 2px 0 0; font-family: var(--stencil); font-weight: 800; font-size: clamp(38px, 4.6vw, 56px);
+  line-height: 1; color: var(--cc-text); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gauge p { margin: 4px 0 8px; font-size: 12.5px; color: var(--cc-muted); line-height: 1.4; min-height: 2.8em; }
+.gauge--lost dd { color: var(--ok); }
+.gauge--lost.is-hit dd { color: var(--lost); }
+.gauge--lost.is-flash dd { animation: flash 0.7s ease-out; }
+.gauge.is-alert dd { color: var(--lost); }
+.gauge.is-busy dd { color: var(--sodium); }
+@keyframes flash { 0% { transform: scale(1.18); } 100% { transform: none; } }
+
+/* ---------- The scene ---------- */
+.scene {
+  position: relative; height: clamp(340px, 50vh, 470px); overflow: hidden;
+  background:
+    radial-gradient(ellipse 34% 40% at 8% 78%, rgba(255, 179, 71, 0.16), transparent 70%),
+    radial-gradient(ellipse 34% 40% at 92% 78%, rgba(255, 179, 71, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(87, 84, 170, 0.35), transparent 70%),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-low) 100%);
+  border-block: 1px solid var(--cc-border);
+}
+/* Two light masts at the ends of the quay, sodium lamps on top */
+.scene__sky {
+  position: absolute; inset: 0;
+  --lamp-y: calc(50% - var(--sea-h) - var(--wall-h));
+  background:
+    radial-gradient(circle at calc(3% + 1.5px) var(--lamp-y), #ffe7bf 0 3px, rgba(255, 179, 71, 0.4) 5px, transparent 28px),
+    radial-gradient(circle at calc(97% - 1.5px) var(--lamp-y), #ffe7bf 0 3px, rgba(255, 179, 71, 0.4) 5px, transparent 28px);
+}
+.scene__sky::before, .scene__sky::after {
+  content: ""; position: absolute; bottom: calc(var(--sea-h) + var(--wall-h)); width: 3px; height: 50%;
+  background: linear-gradient(180deg, #ffe7bf 0 5px, #4c5180 5px);
+}
+.scene__sky::before { left: 3%; }
+.scene__sky::after { right: 3%; }
+
+/* The quay wall, where berth plates are painted */
+.scene::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: var(--sea-h); height: var(--wall-h);
+  background:
+    linear-gradient(180deg, var(--concrete-top) 0 3px, transparent 3px),
+    repeating-linear-gradient(90deg, transparent 0 119px, rgba(14, 17, 36, 0.35) 119px 121px),
+    var(--concrete);
+}
+.scene__sea {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--sea-h);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 9px, rgba(255, 179, 71, 0.06) 9px 10px),
+    linear-gradient(180deg, #0d173c, var(--sea));
+}
+
+/* Cranes stand on the quay; their plates are on the wall */
+.quay {
+  position: absolute; left: 0; right: 0; bottom: var(--sea-h); top: 26px; margin: 0 auto; padding: 0 var(--cc-gutter);
+  max-width: var(--cc-max); list-style: none;
+  display: flex; justify-content: center; align-items: stretch; gap: clamp(6px, 1.6vw, 24px);
+}
+.quay__empty { align-self: center; color: var(--cc-muted); font-size: 14px; }
+.crane {
+  --paint: var(--cc-text-2);
+  position: relative; flex: 0 1 128px; min-width: 0; display: flex; flex-direction: column;
+  transition: opacity 0.6s ease, filter 0.6s ease, flex-basis 0.6s ease;
+  transform-origin: 50% 100%;
+}
+.crane__rig { position: relative; flex: 1; }
+.crane__frame { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.crane__frame .paint { fill: var(--paint); transition: fill 0.6s ease; }
+.crane__frame .paint-line { stroke: var(--paint); fill: none; stroke-width: 2.5; vector-effect: non-scaling-stroke; transition: stroke 0.6s ease; }
+.crane__frame .brace { stroke: var(--paint); stroke-width: 1.2; vector-effect: non-scaling-stroke; opacity: 0.55; }
+.crane__frame .lattice { fill: none; stroke: rgba(14, 17, 36, 0.6); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.crane__frame .house { fill: rgba(14, 17, 36, 0.55); }
+.crane__frame .beacon { fill: #ff5d6c; animation: beacon 2.4s ease-in-out infinite; }
+@keyframes beacon { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* The hoist: a cable and a spreader under the trolley */
+.crane__hoist {
+  position: absolute; left: 50%; top: 24%; width: 2px; height: 12%; margin-left: -1px;
+  background: rgba(222, 221, 238, 0.45); transition: height 0.25s ease;
+}
+.crane__hoist::after {
+  content: ""; position: absolute; left: 50%; bottom: -3px; width: 26px; height: 4px; margin-left: -13px;
+  border-radius: 1px; background: var(--paint);
+}
+.crane.is-busy .crane__hoist { height: 36%; }
+
+/* Containers stack between the legs */
+.crane__stack {
+  position: absolute; left: 22%; right: 22%; bottom: 0; height: 38%;
+  display: flex; flex-wrap: wrap-reverse; align-content: flex-start; list-style: none; margin: 0; padding: 0;
+}
+.box {
+  --c: #2f6fb5;
+  width: 33.333%; height: 25%; padding: 1px;
+}
+.box i {
+  display: block; width: 100%; height: 100%; border-radius: 1px;
+  background: repeating-linear-gradient(90deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 78%, #000) 3px 4px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.box.is-new i { animation: land 0.55s cubic-bezier(0.3, 0.6, 0.35, 1) both; }
+@keyframes land { from { transform: translateY(-260%); opacity: 0.2; } 60% { opacity: 1; } to { transform: none; } }
+
+/* Berth plate on the quay wall */
+.plate {
+  height: var(--wall-h); display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; align-content: center;
+  column-gap: 8px; row-gap: 3px; padding: 6px 4px 6px; min-width: 0;
+}
+.plate__id {
+  grid-column: 1 / -1; font-family: var(--stencil); font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: 0.03em;
+  color: #e9e7f5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.plate__ver {
+  justify-self: start; font-family: var(--cc-mono); font-size: 11px; font-weight: 600; line-height: 1;
+  padding: 3px 6px; border-radius: 4px; color: #14172f; background: var(--paint);
+}
+.plate__state { align-self: center; font-size: 11.5px; color: #c9c8e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.plate__cpu { grid-column: 1 / -1; position: relative; height: 5px; border-radius: 3px; background: rgba(14, 17, 36, 0.55); overflow: hidden; }
+.plate__cpu i { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 3px; background: var(--paint); transition: width 0.8s ease; }
+.plate__cpu::after { content: ""; position: absolute; top: 0; bottom: 0; left: var(--target, 60%); width: 2px; background: rgba(255, 255, 255, 0.55); z-index: 1; }
+
+/* Crane life: rigging (not ready), on duty, signing off (terminating), gone */
+.crane.is-new { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes rise { from { transform: scaleY(0.15); opacity: 0; } to { transform: none; opacity: 1; } }
+.crane.is-starting .crane__frame { opacity: 0.45; }
+.crane.is-starting .crane__frame .paint { fill: transparent; stroke: var(--paint); stroke-width: 1.4; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.crane.is-starting .crane__hoist { opacity: 0; }
+.crane.is-leaving { filter: grayscale(1); opacity: 0.45; }
+.crane.is-gone { opacity: 0; flex-basis: 0; filter: grayscale(1); }
+
+/* Ships queuing in the basin during the rush hour, lost containers splashing */
+.ships { position: absolute; inset: 0; pointer-events: none; }
+.ship {
+  position: absolute; bottom: 18%; width: clamp(54px, 7vw, 92px); height: auto;
+  animation: bob 3.2s ease-in-out infinite; transition: left 1.2s ease, opacity 0.8s ease;
+}
+.ship .hull { fill: #2a1d3a; }
+.ship .deck { fill: var(--sodium); opacity: 0.85; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.rush-label {
+  position: absolute; right: var(--cc-gutter); top: 10px; font-size: 12.5px; font-weight: 600; color: var(--sodium);
+}
+.splash { position: absolute; bottom: 30%; width: 22px; height: 14px; margin-left: -11px; }
+.splash i { position: absolute; inset: 0; border-radius: 2px; background: var(--lost); animation: sink 1.4s ease-in forwards; }
+.splash::after {
+  content: ""; position: absolute; left: 50%; bottom: -4px; width: 10px; height: 4px; margin-left: -5px; border-radius: 50%;
+  border: 2px solid rgba(255, 93, 108, 0.8); animation: ring 1.4s ease-out forwards;
+}
+@keyframes sink { 0% { transform: translateY(-140px) rotate(-8deg); } 55% { transform: translateY(0) rotate(12deg); opacity: 1; } 100% { transform: translateY(16px) rotate(20deg); opacity: 0; } }
+@keyframes ring { 0%, 50% { opacity: 0; transform: scale(0.3); } 60% { opacity: 1; } 100% { opacity: 0; transform: scale(4); } }
+
+.scene__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 14px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--cc-text-2); }
+.legend li { display: inline-flex; align-items: center; gap: 7px; }
+.legend li::before { content: ""; width: 12px; height: 12px; border-radius: 3px; background: var(--paint); }
+.legend .legend__lost::before { background: var(--lost); }
+
+/* ---------- Ledger and Kubernetes panels ---------- */
+.board-section { padding-top: clamp(28px, 4vw, 44px); }
+.board { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(16px, 2.4vw, 28px); align-items: start; }
+.panel { background: var(--cc-surface); border: 1px solid var(--cc-border); border-radius: var(--cc-radius); overflow: hidden; }
+.panel__head { padding: 18px 20px 14px; border-bottom: 1px solid var(--cc-border); }
+.panel__head h2 { margin: 0; font-size: 20px; font-weight: 750; letter-spacing: -0.01em; }
+.panel__head p { margin: 4px 0 0; font-size: 13.5px; color: var(--cc-muted); }
+
+.ledger__scroll { overflow-x: auto; }
+.ledger__table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.ledger__table th { text-align: left; font-size: 12px; font-weight: 600; color: var(--cc-muted); padding: 10px 12px; border-bottom: 1px solid var(--cc-border); }
+.ledger__table td { padding: 8px 12px; border-bottom: 1px solid rgba(222, 221, 238, 0.07); vertical-align: middle; }
+.ledger__table th:first-child, .ledger__table td:first-child { padding-left: 20px; }
+.ledger__table tr.is-new td { animation: rowin 1.2s ease-out; }
+@keyframes rowin { from { background: rgba(255, 179, 71, 0.12); } to { background: transparent; } }
+.l-time { font-family: var(--cc-mono); font-size: 12px; color: var(--cc-muted); white-space: nowrap; }
+.l-code { font-family: var(--stencil); font-weight: 600; font-size: 17px; letter-spacing: 0.04em; white-space: nowrap; color: #e9e7f5; }
+.l-code b { font-weight: 800; color: var(--sodium); }
+.l-cargo { color: var(--cc-text-2); }
+.l-cargo small { display: block; font-size: 12px; color: var(--cc-muted); }
+.l-crane { white-space: nowrap; font-family: var(--cc-mono); font-size: 12.5px; }
+.chip { display: inline-block; font-family: var(--cc-mono); font-size: 11px; font-weight: 600; padding: 2px 6px; margin-right: 6px; border-radius: 4px; color: #14172f; background: var(--paint, #deddee); }
+.ledger__empty { color: var(--cc-muted); padding: 18px 20px !important; }
+.ledger__sum { margin: 0; padding: 14px 20px 18px; font-size: 14px; line-height: 1.55; color: var(--cc-text-2); }
+.ledger__sum b { color: var(--cc-text); font-variant-numeric: tabular-nums; }
+
+.events { list-style: none; margin: 0; padding: 6px 0; max-height: 360px; overflow-y: auto; }
+.events li { padding: 9px 20px; border-bottom: 1px solid rgba(222, 221, 238, 0.07); font-size: 13px; line-height: 1.45; }
+.events li:last-child { border-bottom: 0; }
+.ev-top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.ev-reason { font-weight: 700; color: var(--cc-text); }
+.ev-object { font-family: var(--cc-mono); font-size: 11.5px; color: var(--cc-muted); overflow-wrap: anywhere; }
+.ev-age { margin-left: auto; font-family: var(--cc-mono); font-size: 11.5px; color: var(--cc-muted); }
+.ev-msg { margin-top: 2px; color: var(--cc-text-2); overflow-wrap: anywhere; }
+.events li.is-warning .ev-reason { color: var(--sodium); }
+.events li.is-new { animation: rowin 1.2s ease-out; }
+.events__empty { color: var(--cc-muted); }
+
+.acts__title { margin: 0; padding: 16px 20px 4px; font-size: 15px; font-weight: 700; border-top: 1px solid var(--cc-border); }
+.acts { margin: 0; padding: 4px 20px 18px 40px; font-size: 13.5px; color: var(--cc-text-2); line-height: 1.5; }
+.acts li { padding: 7px 0 7px 4px; }
+.acts li::marker { font-family: var(--stencil); font-weight: 800; color: var(--sodium); }
+.acts b { color: var(--cc-text); }
+.acts code {
+  display: block; margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: var(--cc-bg-deep); border: 1px solid var(--cc-border);
+  font-family: var(--cc-mono); font-size: 12px; color: #e9e7f5; overflow-wrap: anywhere;
+}
+
+.platform-section { padding-top: 0; }
+.platform-section .cc-kv { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cc-kv dd { overflow-wrap: anywhere; }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 900px) {
+  .harbour__head { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .board { grid-template-columns: minmax(0, 1fr); }
+  .platform-section .cc-kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  :root { --wall-h: 64px; }
+  .cc-hide-sm { display: none !important; }
+  .live-long { display: none; }
+  .live-short { display: inline; }
+  .cc-topbar .cc-pill--live { display: none; }
+  .harbour__title { font-size: 58px; }
+  .harbour__lead { font-size: 14.5px; margin-top: 12px; }
+  .gauge dd { font-size: 34px; }
+  .gauge p { min-height: 0; }
+  .gauge { padding-right: 10px; }
+  .gauge:nth-child(2n) { padding-left: 12px; }
+  .gauge p { font-size: 11.5px; }
+  .scene { height: clamp(320px, 58vh, 420px); }
+  .plate { padding: 5px 1px; column-gap: 4px; }
+  .plate__id { font-size: 15px; }
+  .plate__state { display: none; }
+  .plate__ver { font-size: 10px; padding: 2px 4px; }
+  .ledger__table th:nth-child(3), .ledger__table td:nth-child(3) { display: none; }
+  .ledger__table th, .ledger__table td { padding-inline: 10px; }
+  .ledger__table th:first-child, .ledger__table td:first-child { padding-left: 16px; }
+  .scene__sky::before, .scene__sky::after { display: none; }
+  .scene__sky { background: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box.is-new i, .crane.is-new, .ship, .splash i, .splash::after, .crane__frame .beacon,
+  .gauge--lost.is-flash dd, .ledger__table tr.is-new td, .events li.is-new { animation: none !important; }
+  .crane, .crane__hoist { transition: none; }
+}
+.splashes { position: absolute; inset: 0; pointer-events: none; }

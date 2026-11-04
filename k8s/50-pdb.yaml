@@ -1,0 +1,11 @@
+# Keeps at least one crane on duty when a node is drained (cluster upgrade, node replacement).
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: harbour
+  namespace: harbour
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: harbour

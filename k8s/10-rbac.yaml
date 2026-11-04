@@ -1,0 +1,42 @@
+# The app reads (never writes) what Kubernetes knows about it, to draw the cranes.
+# Namespace-scoped, read-only, and no access to Secrets.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: harbour
+  namespace: harbour
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: harbour-reader
+  namespace: harbour
+rules:
+  - apiGroups: [""]
+    resources: [pods, events]
+    verbs: [get, list]
+  - apiGroups: [apps]
+    resources: [deployments]
+    resourceNames: [harbour]
+    verbs: [get]
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    resourceNames: [harbour]
+    verbs: [get]
+  - apiGroups: [metrics.k8s.io]
+    resources: [pods]
+    verbs: [get, list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: harbour-reader
+  namespace: harbour
+subjects:
+  - kind: ServiceAccount
+    name: harbour
+    namespace: harbour
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: harbour-reader

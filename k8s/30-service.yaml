@@ -1,0 +1,15 @@
+# A LoadBalancer Service gets its own public IPs on Clever Kubernetes Engine (L4, TCP).
+# Default quota: one LoadBalancer Service per organisation.
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbour
+  namespace: harbour
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: harbour
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
