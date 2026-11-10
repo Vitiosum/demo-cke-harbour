@@ -2,6 +2,8 @@
 
 > A container port at night. Every pod of the team's own Go service is a crane; every request from your browser is a container it unloads and writes in the ledger, a PostgreSQL that Clever Cloud runs **outside the cluster**. Ship version 2 and the cranes are repainted one by one while the **lost containers** counter stays at zero. Start a rush hour and the **HorizontalPodAutoscaler** opens new cranes, then closes them. Push a broken release and it never gets a single request. The page reads all of it from the Kubernetes API with its own read-only ServiceAccount: pods, rollout, autoscaler, events. Plain manifests and `kubectl`, on a control plane that Clever Cloud runs in France.
 
+![Rush hour live on Clever Cloud (Clever Kubernetes Engine): the pods reach 118 % of their CPU request, the autoscaler goes from 2 to 4 pods and two new cranes go on duty](docs/tour.gif)
+
 ![Rolling update from v1 (yellow cranes) to v2 (coral): no container lost](docs/rollout.png)
 
 ![Rush hour: the autoscaler has opened six cranes, ships wait in the basin](docs/rush-hour.png)
